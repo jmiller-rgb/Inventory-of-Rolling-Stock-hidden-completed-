@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menuitem_addRollingStock"
+        android:contentDescription="@string/menuitem_addRollingStock_contentDesc"
+        android:icon="@drawable/ic_add_circle_black_24dp"
+        android:title="@string/menuitem_addRollingStock_title"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menuitem_import"
+        android:contentDescription="@string/menuitem_Import_contentDesc"
+        android:orderInCategory="1"
+        android:title="@string/menuitem_Import_title"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuitem_settings"
+        android:contentDescription="@string/menuitem_settings_contentDesc"
+        android:orderInCategory="2"
+        android:title="@string/menuitem_settings_title"
+        android:visible="false"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="stockTypes">
+        <item>AUTORACK</item>
+        <item>BOXCAR</item>
+        <item>HOPPER</item>
+        <item>CENTER_IBEAM</item>
+        <item>FLATCAR</item>
+        <item>GONDOLA</item>
+        <item>TANK</item>
+        <item>CABOOSE</item>
+        <item>WAYCAR</item>
+    </string-array>
+</resources>
