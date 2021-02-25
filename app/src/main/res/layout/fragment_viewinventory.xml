@@ -12,18 +12,30 @@
         android:layout_width="307dp"
         android:layout_height="48dp"
         android:ems="10"
-        android:hint="Search for..."
+        android:hint="@string/search_for"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/err_search_cannot_be_empty"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="13sp"
+        android:id="@+id/searchError"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBox" />
 
     <Button
         android:id="@+id/searchBtn"
         android:layout_width="103dp"
         android:layout_height="48dp"
-        android:text="Search"
+        android:text="@string/searchBtn_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/searchBox"
@@ -33,11 +45,11 @@
         android:id="@+id/rollingStockView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:paddingBottom="?attr/actionBarSize"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchBox"
-        android:paddingBottom="?attr/actionBarSize" />
+        app:layout_constraintTop_toBottomOf="@+id/searchError" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

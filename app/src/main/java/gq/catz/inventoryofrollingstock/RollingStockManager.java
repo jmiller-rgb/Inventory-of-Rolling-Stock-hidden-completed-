@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +113,17 @@ public class RollingStockManager {
 		values.put(RollingStockTable.Cols.IS_RENTED, Boolean.toString(rollingStockItem.isRented()));
 
 		return values;
+	}
+
+	public void importRollingStock(String fileName) {
+		List<RollingStockItem> newRollingStockItems = Utils.readRollingStockFromCSV(fileName);
+		if (newRollingStockItems == null) {
+			Toast.makeText(context, "This feature is not available on this version of Android.", Toast.LENGTH_LONG).show();
+		} else {
+			for (RollingStockItem rollingStockItem : newRollingStockItems) {
+				addRollingStock(rollingStockItem);
+			}
+		}
 	}
 
 	public void addRollingStock(RollingStockItem rollingStockItem) {

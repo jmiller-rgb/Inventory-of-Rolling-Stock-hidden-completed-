@@ -24,4 +24,7 @@
     <string name="menuitem_settings_title">Settings</string>
     <string name="menuitem_addRollingStock_contentDesc">Add new rolling stock entry</string>
     <string name="menuitem_addRollingStock_title">Add Rolling Stock</string>
+		<string name="search_for">Search for...</string>
+    <string name="searchBtn_text">Search</string>
+    <string name="err_search_cannot_be_empty">ERR: Search cannot be empty!</string>
 </resources>

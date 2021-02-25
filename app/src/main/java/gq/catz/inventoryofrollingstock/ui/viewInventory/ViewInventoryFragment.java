@@ -1,7 +1,10 @@
 package gq.catz.inventoryofrollingstock.ui.viewInventory;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +33,7 @@ import com.google.android.material.card.MaterialCardView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +41,7 @@ import gq.catz.inventoryofrollingstock.MainActivity;
 import gq.catz.inventoryofrollingstock.R;
 import gq.catz.inventoryofrollingstock.RollingStockItem;
 import gq.catz.inventoryofrollingstock.RollingStockManager;
+import gq.catz.inventoryofrollingstock.database.RollingStockCursorWrapper;
 import gq.catz.inventoryofrollingstock.ui.addEntry.AddEntryFragment;
 
 public class ViewInventoryFragment extends Fragment {
@@ -50,6 +57,7 @@ public class ViewInventoryFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		rsm = RollingStockManager.get(getActivity());
 		rollingStockItems = rsm.getRollingStocks();
+		setHasOptionsMenu(true);
 	}
 
 	public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,11 +67,46 @@ public class ViewInventoryFragment extends Fragment {
 		stockView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		stockAdapter = new StockAdapter(rollingStockItems);
 		stockView.setAdapter(stockAdapter);
+
+		final EditText searchEdit = v.findViewById(R.id.searchBox);
+		Button searchBtn = v.findViewById(R.id.searchBtn);
+		final TextView searchError = v.findViewById(R.id.searchError);
+		searchBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				String searchString = searchEdit.getText().toString();
+				if (searchString.length() == 0) {
+					searchError.setVisibility(View.VISIBLE);
+				} else {
+					List<RollingStockItem> rollingStockItemsSearch = new ArrayList<RollingStockItem>();
+					RollingStockCursorWrapper cursor = RollingStockManager.get(getActivity()).queryRollingStock(
+							"lower(reportingMark)=? OR lower(fleetID)=? OR lower(stockType)=? OR lower(owningCompany)=?",
+							new String[] {
+									searchString.toLowerCase(),
+									searchString.toLowerCase(),
+									searchString.toLowerCase(),
+									searchString.toLowerCase()
+							}
+					);
+					try {
+						cursor.moveToFirst();
+						while (!cursor.isAfterLast()) {
+							rollingStockItemsSearch.add(cursor.getRollingStock());
+							cursor.moveToNext();
+						}
+					}
+					finally {
+						cursor.close();
+					}
+					updateList(rollingStockItemsSearch);
+				}
+			}
+		});
 		//getActivity().;
 		return v;
 	}
 
-	/*@Override
+	@Override
 	public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
 		inflater.inflate(R.menu.menu, menu);
 	}
@@ -75,14 +118,45 @@ public class ViewInventoryFragment extends Fragment {
 				((MainActivity) requireActivity()).navController.navigate(R.id.navigation_home);
 				break;
 			case R.id.menuitem_import:
-				importFile();
+				openFile(null);
 		}
 		return false;
 	}
 
-	private void importFile() {
-		Intent getFileIntent = new Intent(ViewInventoryFragment.this, Intent.)
-	}*/
+	// Request code for selecting a PDF document.
+	private static final int PICK_PDF_FILE = 2;
+
+	private void openFile(@Nullable Uri pickerInitialUri) {
+		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType("text/csv");
+
+		// Optionally, specify a URI for the file that should appear in the
+		// system file picker when it loads.
+		if (pickerInitialUri != null)
+			intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+		startActivityForResult(intent, PICK_PDF_FILE);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode,
+	                             Intent resultData) {
+		if (requestCode == PICK_PDF_FILE
+				&& resultCode == Activity.RESULT_OK) {
+			// The result data contains a URI for the document or directory that
+			// the user selected.
+			Uri uri = null;
+			if (resultData != null) {
+				String filePath = Objects.requireNonNull(resultData.getData()).getPath();
+				if (filePath != null) {
+					RollingStockManager.get(getActivity()).importRollingStock(filePath);
+					updateList(RollingStockManager.get(getActivity()).getRollingStocks());
+				}
+				// Perform operations on the document using its URI.
+			}
+		}
+	}
 
 	public boolean handleOnBackPressed() {
 		Toast.makeText(getActivity(), "Back Pressed", Toast.LENGTH_LONG).show();
@@ -95,6 +169,10 @@ public class ViewInventoryFragment extends Fragment {
 			}
 		}
 		return cardChecked;
+	}
+
+	public void updateList(List<RollingStockItem> rollingStockItems) {
+		Objects.requireNonNull((StockAdapter) stockView.getAdapter()).setRollingStockItems(rollingStockItems);
 	}
 
 

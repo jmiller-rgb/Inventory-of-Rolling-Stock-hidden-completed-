@@ -10,5 +10,9 @@ public enum StockTypes {
 	TANK,
 	CABOOSE,
 	WAYCAR,
-	ENGINE
+	ENGINE;
+
+	public static StockTypes getStockTypeByString(String stockTypeStr) {
+		return StockTypes.valueOf(stockTypeStr.toUpperCase());
+	}
 }
