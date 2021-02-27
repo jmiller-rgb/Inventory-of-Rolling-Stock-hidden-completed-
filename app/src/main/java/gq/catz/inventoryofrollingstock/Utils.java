@@ -1,7 +1,8 @@
 package gq.catz.inventoryofrollingstock;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -50,7 +51,7 @@ public class Utils {
 
 				// read the first line from the text file
 				String line = br.readLine();
-
+				Log.e("BufferedReaderResult", "" + line);
 				// loop until all lines are read
 				while (line != null) {
 
