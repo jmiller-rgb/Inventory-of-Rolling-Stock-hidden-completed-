@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Utils {
 	public static String determineStockType(StockTypes type) {
 		if (type == StockTypes.AUTORACK)
@@ -88,6 +89,7 @@ public class Utils {
 		String isEngine = metadata[4].toLowerCase();
 		String isLoaded = metadata[5].toLowerCase();
 		String isRented = metadata[6].toLowerCase();
+		String inConsist = metadata[7].toLowerCase();
 
 		if (Boolean.parseBoolean(isRented)) {
 			owningCompany = "N/A";
@@ -97,7 +99,7 @@ public class Utils {
 		}
 
 		// create and return book of this metadata
-		return new RollingStockItem(reportingMark, fleetID, stockType, owningCompany, isEngine, isLoaded, isRented);
+		return new RollingStockItem(reportingMark, fleetID, stockType, owningCompany, isEngine, isLoaded, isRented, inConsist);
 	}
 }
 

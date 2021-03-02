@@ -32,7 +32,7 @@ public class AddEntryFragment extends Fragment {
 
 	private EditText reportingMark, fleetID, owningCompany;
 	private Spinner stockType;
-	private MaterialCheckBox isEngine, isLoaded, isRented;
+	private MaterialCheckBox isEngine, isLoaded, isRented, inConsist;
 	private MaterialButton addBtn;
 	private ArrayAdapter<CharSequence> spinnerAdapter;
 	private UUID editingRollingStockUUID = null;
@@ -50,6 +50,7 @@ public class AddEntryFragment extends Fragment {
 		isEngine = v.findViewById(R.id.isEngineChkBox);
 		isLoaded = v.findViewById(R.id.isLoadedChkBox);
 		isRented = v.findViewById(R.id.isRentedChkBox);
+		inConsist = v.findViewById(R.id.inConsistChkbox);
 		addBtn = v.findViewById(R.id.addRollingStockBtn);
 		spinnerAdapter = ArrayAdapter.createFromResource(requireActivity(), R.array.stockTypes, com.google.android.material.R.layout.support_simple_spinner_dropdown_item);
 		stockType.setAdapter(spinnerAdapter);
@@ -77,6 +78,7 @@ public class AddEntryFragment extends Fragment {
 				isEngine.setChecked(rollingStockItem.isEngine());
 				isLoaded.setChecked(rollingStockItem.isLoaded());
 				isRented.setChecked(rollingStockItem.isRented());
+				inConsist.setChecked(rollingStockItem.isInConsist());
 			}
 		}
 
@@ -117,7 +119,8 @@ public class AddEntryFragment extends Fragment {
 							stockTypeStr = (String) stockType.getSelectedItem(),
 							isEngineStr = Boolean.toString(isEngine.isChecked()),
 							isLoadedStr = Boolean.toString(isLoaded.isChecked()),
-							isRentedStr = Boolean.toString(isRented.isChecked());
+							isRentedStr = Boolean.toString(isRented.isChecked()),
+							inConsistStr = Boolean.toString(inConsist.isChecked());
 					if (isEngine.isChecked()) {
 						stockTypeStr = "engine";
 					}
@@ -128,7 +131,7 @@ public class AddEntryFragment extends Fragment {
 						isLoadedStr = "N/A";
 					}
 					if (!isEditing) {
-						rollingStockItem = new RollingStockItem(reportingMarkStr, fleetIDStr, stockTypeStr, owningCompanyStr, isEngineStr, isLoadedStr, isRentedStr);
+						rollingStockItem = new RollingStockItem(reportingMarkStr, fleetIDStr, stockTypeStr, owningCompanyStr, isEngineStr, isLoadedStr, isRentedStr, inConsistStr);
 						RollingStockManager.get(getActivity()).addRollingStock(rollingStockItem);
 					} else {
 						rollingStockItem.setReportingMark(reportingMarkStr);
@@ -138,6 +141,7 @@ public class AddEntryFragment extends Fragment {
 						rollingStockItem.setEngine(isEngine.isChecked());
 						rollingStockItem.setLoaded(isLoaded.isChecked());
 						rollingStockItem.setRented(isRented.isChecked());
+						rollingStockItem.setInConsist(inConsist.isChecked());
 						RollingStockManager.get(getActivity()).updateRollingStock(rollingStockItem);
 						getParentFragmentManager().popBackStack();
 					}

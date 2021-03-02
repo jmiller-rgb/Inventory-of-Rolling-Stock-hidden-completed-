@@ -27,4 +27,5 @@
 		<string name="search_for">Search for...</string>
     <string name="searchBtn_text">Search</string>
     <string name="err_search_cannot_be_empty">ERR: Search cannot be empty!</string>
+		<string name="is_in_consistChkBoxLabel">Is In Consist</string>
 </resources>

@@ -7,7 +7,7 @@ public class RollingStockDBSchema {
 		public static final class Cols {
 			/*
 				private String callMarks; // ----\
-										//		 |--- title
+										//		  |--- title
 				private int idNum; // -----------/
 				private String stockType, owningCompany;
 				private boolean isEngine, isLoaded, isRented;
@@ -20,6 +20,7 @@ public class RollingStockDBSchema {
 			public static final String IS_ENGINE = "isEngine";
 			public static final String IS_LOADED = "isLoaded";
 			public static final String IS_RENTED = "isRented";
+			public static final String IN_CONSIST = "inConsist";
 		}
 	}
 }

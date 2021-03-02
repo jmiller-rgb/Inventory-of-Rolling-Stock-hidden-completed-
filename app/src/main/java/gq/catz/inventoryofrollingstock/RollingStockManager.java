@@ -16,7 +16,6 @@ import gq.catz.inventoryofrollingstock.database.RollingStockCursorWrapper;
 import gq.catz.inventoryofrollingstock.database.RollingStockDBSchema.RollingStockTable;
 
 public class RollingStockManager {
-	private List<RollingStockItem> rsi;
 	private Context context;
 	private SQLiteDatabase rollingStockDatabase;
 
@@ -27,9 +26,6 @@ public class RollingStockManager {
 	private RollingStockManager(Context context) {
 		this.context = context.getApplicationContext();
 		rollingStockDatabase = new RollingStockBaseHelper(this.context).getWritableDatabase();
-
-		//rsi = new ArrayList<RollingStockItem>();
-		//rsi.addAll(generateRollingStocks(25)); // TODO: Replace with database retrieval of rolling stock
 	}
 
 	public List<RollingStockItem> getRollingStocks() {
@@ -49,24 +45,25 @@ public class RollingStockManager {
 		return rollingStockItemList;
 	}
 
+	@SuppressWarnings("unused")
 	private List<RollingStockItem> generateRollingStocks(int amount) {
-		ArrayList<RollingStockItem> tmp = new ArrayList<RollingStockItem>();
+		ArrayList<RollingStockItem> tmp = new ArrayList<>();
 		for (int i = 0; i < amount; i++) {
 			Random r = new Random();
-
-			String callLetters = "";
+			StringBuilder callLetters = new StringBuilder();
 			int idNum = r.nextInt(1000000);
 			boolean isEngine = r.nextBoolean();
-			String stockType = "";
+			String stockType;
 			boolean isLoad = false;
 			boolean isRented = r.nextBoolean();
-			String owningCompany = "";
+			boolean inConsist = r.nextBoolean();
+			StringBuilder owningCompany = new StringBuilder();
 
 			for (int j = 0; j < 4; j++) {
 				char c = (char) (r.nextInt(26) + 'a');
-				callLetters += c;
+				callLetters.append(c);
 			}
-			if (isEngine == true) {
+			if (isEngine) {
 				stockType = "engine";
 			} else {
 				int pos = r.nextInt(StockTypes.values().length - 1);
@@ -76,16 +73,15 @@ public class RollingStockManager {
 			}
 			for (int j = 0; j < 3; j++) {
 				char c = (char) (r.nextInt(26) + 'a');
-				owningCompany += c;
+				owningCompany.append(c);
 			}
-			tmp.add(new RollingStockItem(callLetters, idNum, isEngine, stockType, isLoad, owningCompany, isRented));
+			tmp.add(new RollingStockItem(callLetters.toString(), idNum, isEngine, stockType, isLoad, owningCompany.toString(), isRented, inConsist));
 		}
-		List<RollingStockItem> ret = tmp;
-		return ret;
+		return tmp;
 	}
 
 	public RollingStockItem getRollingStock(UUID id) throws Exception {
-		RollingStockItem rollingStockItemQueryResult = null;
+		RollingStockItem rollingStockItemQueryResult;
 		RollingStockCursorWrapper cursor = queryRollingStock(RollingStockTable.Cols.UUID + " = ?", new String[]{
 				id.toString()
 		});
@@ -115,6 +111,7 @@ public class RollingStockManager {
 		return values;
 	}
 
+	@SuppressWarnings("unused")
 	public void importRollingStock(String fileName) {
 		List<RollingStockItem> newRollingStockItems = Utils.readRollingStockFromCSV(fileName);
 		if (newRollingStockItems == null) {

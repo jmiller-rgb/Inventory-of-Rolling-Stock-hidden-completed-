@@ -158,6 +158,13 @@
                     android:text="@string/is_railcar_loadedChkBoxLabel" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/inConsistChkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/is_in_consistChkBoxLabel" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/isRentedChkBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

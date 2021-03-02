@@ -1,10 +1,20 @@
 package gq.catz.inventoryofrollingstock.ui.viewInventory;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -23,10 +33,18 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import gq.catz.inventoryofrollingstock.MainActivity;
 import gq.catz.inventoryofrollingstock.R;
 import gq.catz.inventoryofrollingstock.RollingStockItem;
 import gq.catz.inventoryofrollingstock.RollingStockManager;
@@ -35,10 +53,11 @@ import gq.catz.inventoryofrollingstock.ui.addEntry.AddEntryFragment;
 
 public class ViewInventoryFragment extends Fragment {
 
-	//public static final int PICKFILE_RESULT_CODE = 1;
+	//private static final int PICKFILE_RESULT_CODE = ;
+	public static final int PICKFILE_RESULT_CODE = 1;
 	//	private DashboardViewModel dashboardViewModel;
 	private RecyclerView stockView;
-	private List<RollingStockItem> rollingStockItems;
+	private List<RollingStockItem> rollingStockItems; // Items for stockView
 	private StockAdapter stockAdapter;
 	private RollingStockManager rsm;
 
@@ -97,7 +116,7 @@ public class ViewInventoryFragment extends Fragment {
 		return v;
 	}
 
-	/*@Override
+	@Override
 	public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
 		inflater.inflate(R.menu.menu, menu);
 	}
@@ -112,12 +131,12 @@ public class ViewInventoryFragment extends Fragment {
 				openFile(null);
 		}
 		return false;
-	}*/ // inflate and handle option menu
+	} // inflate and handle option menu
 
 	// Request code for selecting a PDF document.
-	//private static final int PICK_PDF_FILE = 2;
+	private static final int PICK_PDF_FILE = 2;
 
-	/*private void openFile(@Nullable Uri pickerInitialUri) {
+	private void openFile(@Nullable Uri pickerInitialUri) {
 		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 		intent.addCategory(Intent.CATEGORY_OPENABLE);
 		intent.setType(MimeTypeMap.getSingleton().getMimeTypeFromExtension("csv"));
@@ -132,8 +151,60 @@ public class ViewInventoryFragment extends Fragment {
 //
 //		chooseFile = Intent.createChooser(chooseFile, "Choose a file");
 //		startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
-	}*/ // openFile
+	} // openFile
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == PICKFILE_RESULT_CODE && resultCode == Activity.RESULT_OK){
+			Uri content_describer = data.getData();
+			String src = content_describer.getPath();
+			File source = new File(src);
+			Log.d("src is ", source.toString());
+			Log.d("####@$@####", "Path is " + content_describer.getPath());
+			String filename = content_describer.getLastPathSegment();
+			Toast.makeText(getActivity(), filename, Toast.LENGTH_SHORT).show();
+			Log.d("FileName is ", filename);
+			File destination = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/copy/" + filename);
+			Log.d("Destination is ", destination.toString());
+			DirectoryExist(destination);
+			try {
+				copy(source, destination);
+				rsm.importRollingStock(content_describer.getPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}
+
+	private void DirectoryExist(File destination) {
+
+		if (!destination.isDirectory()) {
+			if (destination.mkdirs()) {
+				Log.d("####@$@####", "Directories created");
+			} else {
+				Log.d("####@$@####", "Directories not created");
+			}
+		}
+	}
+	
+	private void copy(File source, File destination) throws IOException {
+
+		FileChannel in = new FileInputStream(source).getChannel();
+		FileChannel out = new FileOutputStream(destination).getChannel();
+
+		try {
+			in.transferTo(0, in.size(), out);
+		} catch(Exception e){
+			Log.d("Exception", e.toString());
+		} finally {
+			if (in != null)
+				in.close();
+			if (out != null)
+				out.close();
+		}
+	}
 	/*@RequiresApi(api = Build.VERSION_CODES.Q)
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent resultData) {

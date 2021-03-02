@@ -5,10 +5,10 @@ import java.util.UUID;
 public class RollingStockItem {
 	private String reportingMark, stockType, owningCompany;
 	private String fleetID;
-	private String isEngine, isLoaded, isRented;
+	private String isEngine, isLoaded, isRented, inConsist;
 	private UUID id;
 
-	public RollingStockItem(String reportingMark, int fleetID, boolean isEngine, String stockType, boolean isLoaded, String owningCompany, boolean isRented) {
+	public RollingStockItem(String reportingMark, int fleetID, boolean isEngine, String stockType, boolean isLoaded, String owningCompany, boolean isRented, boolean inConsist) {
 		this.reportingMark = reportingMark;
 		this.fleetID = Integer.toString(fleetID);
 		this.isEngine = Boolean.toString(isEngine);
@@ -16,10 +16,11 @@ public class RollingStockItem {
 		this.isLoaded = Boolean.toString(isLoaded);
 		this.owningCompany = owningCompany;
 		this.isRented = Boolean.toString(isRented);
+		this.inConsist = Boolean.toString((inConsist));
 		this.id = UUID.randomUUID();
 	}
 
-	public RollingStockItem(UUID uuid, String reportingMark, int fleetID, String stockType, String owningCompany, boolean isEngine, boolean isLoaded, boolean isRented) {
+	public RollingStockItem(UUID uuid, String reportingMark, int fleetID, String stockType, String owningCompany, boolean isEngine, boolean isLoaded, boolean isRented, boolean inConsist) {
 		this.reportingMark = reportingMark;
 		this.fleetID = Integer.toString(fleetID);
 		this.isEngine = Boolean.toString(isEngine);
@@ -27,10 +28,11 @@ public class RollingStockItem {
 		this.isLoaded = Boolean.toString(isLoaded);
 		this.owningCompany = owningCompany;
 		this.isRented = Boolean.toString(isRented);
+		this.inConsist = Boolean.toString(inConsist);
 		this.id = uuid;
 	}
 
-	public RollingStockItem(String reportingMark, String fleetID, String stockType, String owningCompany, String isEngine, String isLoaded, String isRented) {
+	public RollingStockItem(String reportingMark, String fleetID, String stockType, String owningCompany, String isEngine, String isLoaded, String isRented, String inConsist) {
 		this.reportingMark = reportingMark;
 		this.fleetID = fleetID;
 		this.isEngine = isEngine;
@@ -38,6 +40,7 @@ public class RollingStockItem {
 		this.isLoaded = isLoaded;
 		this.owningCompany = owningCompany;
 		this.isRented = isRented;
+		this.inConsist = inConsist;
 		this.id = UUID.randomUUID();
 	}
 
@@ -49,6 +52,7 @@ public class RollingStockItem {
 		this.isLoaded = isLoaded;
 		this.owningCompany = owningCompany;
 		this.isRented = isRented;
+		this.inConsist = inConsist;
 		this.id = uuid;
 	}
 
@@ -69,7 +73,7 @@ public class RollingStockItem {
 	}
 
 	public int getFleetID() {
-		return new Integer(fleetID);
+		return Integer.parseInt(fleetID);
 	}
 
 	public void setFleetID(String fleetID) {
@@ -77,7 +81,7 @@ public class RollingStockItem {
 	}
 
 	public boolean isEngine() {
-		return new Boolean(isEngine);
+		return Boolean.parseBoolean(isEngine);
 	}
 
 	public void setEngine(boolean engine) {
@@ -101,11 +105,19 @@ public class RollingStockItem {
 	}
 
 	public boolean isRented() {
-		return new Boolean(isRented);
+		return Boolean.parseBoolean(isRented);
 	}
 
 	public void setRented(boolean rented) {
 		isRented = Boolean.toString(rented);
+	}
+
+	public boolean isInConsist() {
+		return Boolean.parseBoolean(inConsist);
+	}
+
+	public void setInConsist(boolean inConsistBool) {
+		inConsist = Boolean.toString(inConsistBool);
 	}
 
 	public UUID getId() {

@@ -26,7 +26,8 @@ public class RollingStockBaseHelper extends SQLiteOpenHelper {
 				RollingStockTable.Cols.OWNING_COMPANY + ", " +
 				RollingStockTable.Cols.IS_ENGINE + ", " +
 				RollingStockTable.Cols.IS_LOADED + ", " +
-				RollingStockTable.Cols.IS_RENTED + " )");
+				RollingStockTable.Cols.IS_RENTED + ", " +
+				RollingStockTable.Cols.IN_CONSIST + " )");
 	}
 
 	@Override

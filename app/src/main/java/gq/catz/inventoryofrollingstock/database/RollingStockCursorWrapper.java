@@ -23,8 +23,9 @@ public class RollingStockCursorWrapper extends CursorWrapper {
 		String isEngine = getString(getColumnIndex(RollingStockTable.Cols.IS_ENGINE));
 		String isLoaded = getString(getColumnIndex(RollingStockTable.Cols.IS_LOADED));
 		String isRented = getString(getColumnIndex(RollingStockTable.Cols.IS_RENTED));
+		String inConsist = getString(getColumnIndex(RollingStockTable.Cols.IN_CONSIST));
 
-		return new RollingStockItem(UUID.fromString(uuid), reportingMarks, new Integer(rollingStockID), stockType, owningCompany, new Boolean(isEngine), new Boolean(isLoaded), new Boolean(isRented));
+		return new RollingStockItem(UUID.fromString(uuid), reportingMarks, Integer.parseInt(rollingStockID), stockType, owningCompany, Boolean.parseBoolean(isEngine), Boolean.parseBoolean(isLoaded), Boolean.parseBoolean(isRented), Boolean.parseBoolean(inConsist));
 	}
 }
 
