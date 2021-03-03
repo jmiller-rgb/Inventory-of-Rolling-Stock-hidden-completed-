@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
+import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -111,16 +112,18 @@ public class RollingStockManager {
 		return values;
 	}
 
-	@SuppressWarnings("unused")
-	public void importRollingStock(String fileName) {
-		List<RollingStockItem> newRollingStockItems = Utils.readRollingStockFromCSV(fileName);
+
+	public boolean importRollingStock(FileDescriptor fd) {
+		List<RollingStockItem> newRollingStockItems = Utils.readRollingStockFromCSV(fd);
 		if (newRollingStockItems == null) {
-			Toast.makeText(context, "This feature is not available on this version of Android.", Toast.LENGTH_LONG).show();
+//			Toast.makeText(context, "This feature is not available on this version of Android.", Toast.LENGTH_LONG).show();
+			return false;
 		} else {
 			for (RollingStockItem rollingStockItem : newRollingStockItems) {
 				addRollingStock(rollingStockItem);
 			}
 		}
+		return true;
 	}
 
 	public void addRollingStock(RollingStockItem rollingStockItem) {

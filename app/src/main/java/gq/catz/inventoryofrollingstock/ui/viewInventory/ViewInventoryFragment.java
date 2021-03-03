@@ -137,23 +137,13 @@ public class ViewInventoryFragment extends Fragment {
 	private static final int PICK_PDF_FILE = 2;
 
 	private void openFile(@Nullable Uri pickerInitialUri) {
-		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-		intent.addCategory(Intent.CATEGORY_OPENABLE);
-		intent.setType(MimeTypeMap.getSingleton().getMimeTypeFromExtension("csv"));
-
-		// Optionally, specify a URI for the file that should appear in the
-		// system file picker when it loads.
-		if (pickerInitialUri != null)
-			intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-
-		startActivityForResult(intent, PICK_PDF_FILE);
-//		Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-//
-//		chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-//		startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
+		boolean importSuccessful = ((MainActivity) requireActivity()).importRollingStock();
+		if (importSuccessful) {
+			updateList(rsm.getRollingStocks());
+		}
 	} // openFile
 
-	@Override
+	/*@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == PICKFILE_RESULT_CODE && resultCode == Activity.RESULT_OK){
@@ -174,37 +164,11 @@ public class ViewInventoryFragment extends Fragment {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-	}
+	}*/
 
-	private void DirectoryExist(File destination) {
 
-		if (!destination.isDirectory()) {
-			if (destination.mkdirs()) {
-				Log.d("####@$@####", "Directories created");
-			} else {
-				Log.d("####@$@####", "Directories not created");
-			}
-		}
-	}
-	
-	private void copy(File source, File destination) throws IOException {
-
-		FileChannel in = new FileInputStream(source).getChannel();
-		FileChannel out = new FileOutputStream(destination).getChannel();
-
-		try {
-			in.transferTo(0, in.size(), out);
-		} catch(Exception e){
-			Log.d("Exception", e.toString());
-		} finally {
-			if (in != null)
-				in.close();
-			if (out != null)
-				out.close();
-		}
-	}
 	/*@RequiresApi(api = Build.VERSION_CODES.Q)
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
