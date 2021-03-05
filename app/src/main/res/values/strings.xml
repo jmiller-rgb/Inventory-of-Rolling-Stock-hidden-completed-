@@ -4,9 +4,9 @@
     <string name="title_viewInventory">View Inventory</string>
     <string name="title_quickStats">Quick Stats</string>
     <string name="stockTypeLabelDesc">The type of rolling stock. Note that if the \'Is Engine\' checkbox is checked, this will not be stored, it will instead be replaced by \"engine\".</string>
-    <string name="owningCompanyLabelDesc"><![CDATA[The owning company of the rolling stock. Note that if the \'Is Rented\' checkbox is checked, this will not be stored, it will instead be replaced with &quot;N/A&quot;.]]></string>
+    <string name="owningCompanyLabelDesc">The owning company of the rolling stock.</string>
     <string name="reporting_mark_Label">Reporting Mark</string>
-    <string name="reportingMarkLabelDesc" tools:ignore="TypographyDashes">This is the 2-4 letter code that appear before the 6 digit fleet id. Ex: TILX, GATX, BNSF, TTX</string>
+    <string name="reportingMarkLabelDesc" tools:ignore="TypographyDashes">This is the 2-4 letter code that appear before the 6 digit fleet id. Ex: TILX, GATX, BNSF, ETTX</string>
     <string name="reportingMarkEditTextHint">Reporting Mark. Ex: TILX, GATX, BNSF, TTX</string>
     <string name="fleet_idLabel">Fleet ID</string>
     <string name="fleetIDLabelDesc">This is the fleet id number, can be up to 6 digits in length. The fleet ID assigns a railcar a number for identification in the company\'s rolling stock fleet. Ex: 688213, 212558, 16154</string>
@@ -16,7 +16,7 @@
     <string name="rolling_stock_typeLabel">Rolling Stock Type</string>
     <string name="is_engineChkBoxLabel">Is Engine</string>
     <string name="is_railcar_loadedChkBoxLabel">Is Railcar Loaded</string>
-    <string name="is_rentedChkBoxLabel">Is Rented</string>
+    <string name="is_rentedChkBoxLabel">Is Company Owned</string>
     <string name="addBtn_Edit">Apply changes</string>
     <string name="menuitem_Import_contentDesc">Import rolling stock data from a file</string>
     <string name="menuitem_Import_title">Import</string>
@@ -24,8 +24,17 @@
     <string name="menuitem_settings_title">Settings</string>
     <string name="menuitem_addRollingStock_contentDesc">Add new rolling stock entry</string>
     <string name="menuitem_addRollingStock_title">Add Rolling Stock</string>
-		<string name="search_for">Search for...</string>
+		<string name="search_for">Search for…</string>
     <string name="searchBtn_text">Search</string>
     <string name="err_search_cannot_be_empty">ERR: Search cannot be empty!</string>
 		<string name="is_in_consistChkBoxLabel">Is In Consist</string>
+    <string name="rolling_stock_identification_information">Rolling Stock Identification Information</string>
+    <string name="stock_type">Stock Type:</string>
+    <string name="is_engine">Is Engine:</string>
+    <string name="has_load">Has Load:</string>
+    <string name="is_rolling_stock_rented">Is Rolling Stock Rented:</string>
+    <string name="owning_company">Owning Company</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="add_rolling_stock">Add Rolling Stock</string>
 </resources>

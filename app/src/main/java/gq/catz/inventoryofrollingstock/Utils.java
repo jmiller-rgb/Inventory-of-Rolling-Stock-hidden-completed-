@@ -99,11 +99,12 @@ public class Utils {
 		String isRented = metadata[6].toLowerCase();
 		String inConsist = metadata[7].toLowerCase();
 
-		if (Boolean.parseBoolean(isRented)) {
+		/*if (Boolean.parseBoolean(isRented)) {
 			owningCompany = "N/A";
-		}
+		}*/
 		if (Boolean.parseBoolean(isEngine)) {
 			stockType = "engine";
+			isLoaded = "false";
 		}
 
 		// create and return book of this metadata

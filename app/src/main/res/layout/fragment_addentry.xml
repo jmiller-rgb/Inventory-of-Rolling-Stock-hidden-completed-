@@ -145,28 +145,34 @@
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/isEngineChkBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/is_engineChkBoxLabel" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/isLoadedChkBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/is_railcar_loadedChkBoxLabel" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/inConsistChkbox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/is_in_consistChkBoxLabel" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/isRentedChkBox"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/is_rentedChkBoxLabel" />
@@ -176,7 +182,7 @@
                 android:id="@+id/addRollingStockBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add Rolling Stock" />
+                android:text="@string/add_rolling_stock" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

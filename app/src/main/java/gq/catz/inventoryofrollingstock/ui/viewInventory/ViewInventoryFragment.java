@@ -7,6 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
+import android.transition.AutoTransition;
+import android.transition.Transition;
+import android.transition.TransitionManager;
+import android.transition.Visibility;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.transition.platform.MaterialContainerTransform;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -129,6 +135,11 @@ public class ViewInventoryFragment extends Fragment {
 				break;
 			case R.id.menuitem_import:
 				openFile(null);
+				updateList(rsm.getRollingStocks());
+				stockAdapter = null;
+				stockAdapter = new StockAdapter(rsm.getRollingStocks());
+				stockView.setAdapter(stockAdapter);
+				break;
 		}
 		return false;
 	} // inflate and handle option menu
@@ -138,74 +149,8 @@ public class ViewInventoryFragment extends Fragment {
 
 	private void openFile(@Nullable Uri pickerInitialUri) {
 		boolean importSuccessful = ((MainActivity) requireActivity()).importRollingStock();
-		if (importSuccessful) {
-			updateList(rsm.getRollingStocks());
-		}
+
 	} // openFile
-
-	/*@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == PICKFILE_RESULT_CODE && resultCode == Activity.RESULT_OK){
-			Uri content_describer = data.getData();
-			String src = content_describer.getPath();
-			File source = new File(src);
-			Log.d("src is ", source.toString());
-			Log.d("####@$@####", "Path is " + content_describer.getPath());
-			String filename = content_describer.getLastPathSegment();
-			Toast.makeText(getActivity(), filename, Toast.LENGTH_SHORT).show();
-			Log.d("FileName is ", filename);
-			File destination = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/copy/" + filename);
-			Log.d("Destination is ", destination.toString());
-			DirectoryExist(destination);
-			try {
-				copy(source, destination);
-				rsm.importRollingStock(content_describer.getPath());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		}
-	}*/
-
-
-	/*@RequiresApi(api = Build.VERSION_CODES.Q)
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-		if (requestCode == PICK_PDF_FILE
-				&& resultCode == Activity.RESULT_OK) {
-			// The result data contains a URI for the document or directory that
-			// the user selected.
-
-			if (resultData != null) {
-				Log.d("############ -> ", Objects.requireNonNull(resultData.getDataString()));
-				Log.d("############ -> ", Objects.requireNonNull(Objects.requireNonNull(URI.parse(resultData.getDataString())).getPath()));
-				/*File importCopy = null;
-				try {
-					InputStream inStream = requireActivity().getContentResolver().openInputStream(Objects.requireNonNull(resultData.getData()));
-					importCopy = File.createTempFile("import", "meow", requireActivity().getCacheDir());
-					importCopy.createNewFile();
-					BufferedWriter writer = Files.newBufferedWriter(Paths.get(importCopy.toURI()));
-					assert inStream != null;
-					while (inStream.available() != 0) {
-						writer.write(inStream.read());
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-					Toast.makeText(getActivity(), "Something went wrong whilst importing CSV file.", Toast.LENGTH_LONG).show();
-				}*\/
-
-				//assert importCopy != null;
-				Log.d("$$#$#$#%#@%", Boolean.toString(resultData.getData() == null));
-				String filePath = Commons.getPath(Objects.requireNonNull(resultData.getData()), getActivity());
-				Log.d("#########$## -> ", filePath);
-
-				RollingStockManager.get(getActivity()).importRollingStock(filePath);
-				updateList(RollingStockManager.get(getActivity()).getRollingStocks());
-				// Perform operations on the document using its URI.
-			}
-		}
-	}*/ // onActivityResult
 
 	public boolean handleOnBackPressed() {
 		Toast.makeText(getActivity(), "Back Pressed", Toast.LENGTH_LONG).show();
@@ -242,12 +187,12 @@ public class ViewInventoryFragment extends Fragment {
 			cardView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Toast.makeText(getActivity(), "MEOW", Toast.LENGTH_LONG).show();
-					LinearLayout cardViewExpansion = cardView.findViewById(R.id.cardExpansion);
+					//Toast.makeText(getActivity(), "MEOW", Toast.LENGTH_LONG).show();
+					final LinearLayout cardViewExpansion = cardView.findViewById(R.id.cardExpansion);
 					if (cardViewExpansion.getVisibility() == View.VISIBLE) {
-						cardView.findViewById(R.id.cardExpansion).setVisibility(View.GONE);
+						cardViewExpansion.setVisibility(View.GONE);
 					} else {
-						cardView.findViewById(R.id.cardExpansion).setVisibility(View.VISIBLE);
+						cardViewExpansion.setVisibility(View.VISIBLE);
 					}
 				}
 			});

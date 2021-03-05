@@ -1,27 +1,22 @@
 package gq.catz.inventoryofrollingstock.ui.addEntry;
 
-import android.database.DataSetObserver;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import java.util.Objects;
 import java.util.UUID;
 
 import gq.catz.inventoryofrollingstock.R;
@@ -39,8 +34,9 @@ public class AddEntryFragment extends Fragment {
 	private boolean isEditing = false;
 	private RollingStockItem rollingStockItem;
 
+	@SuppressLint("SetTextI18n")
 	public View onCreateView(@NonNull LayoutInflater inflater,
-							 ViewGroup container, Bundle savedInstanceState) {
+	                         ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_addentry, container, false);
 
 		reportingMark = v.findViewById(R.id.editReportingMark);
@@ -124,9 +120,9 @@ public class AddEntryFragment extends Fragment {
 					if (isEngine.isChecked()) {
 						stockTypeStr = "engine";
 					}
-					if (isRented.isChecked()) {
+					/*if (isRented.isChecked()) {
 						owningCompanyStr = "N/A";
-					}
+					}*/
 					if (stockTypeStr.equals("engine")) {
 						isLoadedStr = "N/A";
 					}
