@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
 
 import java.io.FileDescriptor;
 import java.util.ArrayList;
@@ -46,7 +45,6 @@ public class RollingStockManager {
 		return rollingStockItemList;
 	}
 
-	@SuppressWarnings("unused")
 	private List<RollingStockItem> generateRollingStocks(int amount) {
 		ArrayList<RollingStockItem> tmp = new ArrayList<>();
 		for (int i = 0; i < amount; i++) {
@@ -126,10 +124,18 @@ public class RollingStockManager {
 		return true;
 	}
 
+	public boolean exportRollingStock(Context context, FileDescriptor fd) {
+		return Utils.writeRollingStockToCSV(context, fd);
+	}
+
 	public void addRollingStock(RollingStockItem rollingStockItem) {
 		ContentValues values = getContentValues(rollingStockItem);
 
 		rollingStockDatabase.insert(RollingStockTable.NAME, null, values);
+	}
+
+	public void finish() {
+		rollingStockDatabase.close();
 	}
 
 	public RollingStockCursorWrapper queryRollingStock(String whereClause, String[] whereArgs) {
@@ -142,6 +148,7 @@ public class RollingStockManager {
 				null, // having
 				null // orderBy
 		);
+		//cursor.close();
 
 		return new RollingStockCursorWrapper(cursor);
 	}

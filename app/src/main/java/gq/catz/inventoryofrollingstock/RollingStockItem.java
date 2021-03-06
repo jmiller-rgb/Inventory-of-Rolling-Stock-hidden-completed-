@@ -7,6 +7,7 @@ public class RollingStockItem {
 	private String fleetID;
 	private String isEngine, isLoaded, isRented, inConsist;
 	private UUID id;
+	private boolean checked;
 
 	public RollingStockItem(String reportingMark, int fleetID, boolean isEngine, String stockType, boolean isLoaded, String owningCompany, boolean isRented, boolean inConsist) {
 		this.reportingMark = reportingMark;
@@ -18,6 +19,7 @@ public class RollingStockItem {
 		this.isRented = Boolean.toString(isRented);
 		this.inConsist = Boolean.toString((inConsist));
 		this.id = UUID.randomUUID();
+		this.checked = false;
 	}
 
 	public RollingStockItem(UUID uuid, String reportingMark, int fleetID, String stockType, String owningCompany, boolean isEngine, boolean isLoaded, boolean isRented, boolean inConsist) {
@@ -30,6 +32,7 @@ public class RollingStockItem {
 		this.isRented = Boolean.toString(isRented);
 		this.inConsist = Boolean.toString(inConsist);
 		this.id = uuid;
+		this.checked = false;
 	}
 
 	public RollingStockItem(String reportingMark, String fleetID, String stockType, String owningCompany, String isEngine, String isLoaded, String isRented, String inConsist) {
@@ -42,9 +45,10 @@ public class RollingStockItem {
 		this.isRented = isRented;
 		this.inConsist = inConsist;
 		this.id = UUID.randomUUID();
+		this.checked = false;
 	}
 
-	public RollingStockItem(UUID uuid, String reportingMark, String fleetID, String stockType, String owningCompany, String isEngine, String isLoaded, String isRented) {
+	public RollingStockItem(UUID uuid, String reportingMark, String fleetID, String stockType, String owningCompany, String isEngine, String isLoaded, String isRented, String inConsist) {
 		this.reportingMark = reportingMark;
 		this.fleetID = fleetID;
 		this.isEngine = isEngine;
@@ -54,6 +58,7 @@ public class RollingStockItem {
 		this.isRented = isRented;
 		this.inConsist = inConsist;
 		this.id = uuid;
+		this.checked = false;
 	}
 
 	public String getReportingMark() {
@@ -122,5 +127,13 @@ public class RollingStockItem {
 
 	public UUID getId() {
 		return id;
+	}
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
 	}
 }

@@ -27,7 +27,7 @@
 		<string name="search_for">Search for…</string>
     <string name="searchBtn_text">Search</string>
     <string name="err_search_cannot_be_empty">ERR: Search cannot be empty!</string>
-		<string name="is_in_consistChkBoxLabel">Is In Consist</string>
+    <string name="is_in_consistChkBoxLabel">Is In Consist</string>
     <string name="rolling_stock_identification_information">Rolling Stock Identification Information</string>
     <string name="stock_type">Stock Type:</string>
     <string name="is_engine">Is Engine:</string>
@@ -37,4 +37,7 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="add_rolling_stock">Add Rolling Stock</string>
+    <string name="menuitem_Delete_contentDesc">Deketes selected rolling stock entries</string>
+    <string name="menuitem_Export_title">Export</string>
+    <string name="menuitem_Export_contentDesc">Export rolling stock data to a csv file</string>
 </resources>

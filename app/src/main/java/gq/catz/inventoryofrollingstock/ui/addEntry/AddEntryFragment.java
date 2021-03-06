@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.UUID;
 
+import gq.catz.inventoryofrollingstock.MainActivity;
 import gq.catz.inventoryofrollingstock.R;
 import gq.catz.inventoryofrollingstock.RollingStockItem;
 import gq.catz.inventoryofrollingstock.RollingStockManager;
@@ -34,9 +36,15 @@ public class AddEntryFragment extends Fragment {
 	private boolean isEditing = false;
 	private RollingStockItem rollingStockItem;
 
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		((MainActivity) requireActivity()).activeFragment = "addEntry";
+	}
+
 	@SuppressLint("SetTextI18n")
 	public View onCreateView(@NonNull LayoutInflater inflater,
-	                         ViewGroup container, Bundle savedInstanceState) {
+							 ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_addentry, container, false);
 
 		reportingMark = v.findViewById(R.id.editReportingMark);

@@ -19,7 +19,7 @@
 
 	<fragment
 		android:id="@+id/navigation_notifications"
-		android:name="gq.catz.inventoryofrollingstock.ui.quickStats.QuickStatsFragment"
+		android:name="gq.catz.inventoryofrollingstock.ui.Consists.ConsistsFragment"
 		android:label="@string/title_quickStats"
 		tools:layout="@layout/fragment_quickstats" />
 </navigation>

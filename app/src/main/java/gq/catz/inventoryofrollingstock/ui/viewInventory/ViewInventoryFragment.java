@@ -1,25 +1,13 @@
 package gq.catz.inventoryofrollingstock.ui.viewInventory;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.transition.AutoTransition;
-import android.transition.Transition;
-import android.transition.TransitionManager;
-import android.transition.Visibility;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -37,15 +25,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.transition.platform.MaterialContainerTransform;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,19 +40,18 @@ import gq.catz.inventoryofrollingstock.database.RollingStockCursorWrapper;
 import gq.catz.inventoryofrollingstock.ui.addEntry.AddEntryFragment;
 
 public class ViewInventoryFragment extends Fragment {
-
-	//private static final int PICKFILE_RESULT_CODE = ;
-	public static final int PICKFILE_RESULT_CODE = 1;
-	//	private DashboardViewModel dashboardViewModel;
 	private RecyclerView stockView;
 	private List<RollingStockItem> rollingStockItems; // Items for stockView
 	private StockAdapter stockAdapter;
 	private RollingStockManager rsm;
-
+	private MenuItem menuItemDelete;
+	private boolean selectionMode = false;
+	private int selectedItemsNum = 0;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		((MainActivity) requireActivity()).activeFragment = "viewInventory";
 		rsm = RollingStockManager.get(getActivity());
 		rollingStockItems = rsm.getRollingStocks();
 		setHasOptionsMenu(true);
@@ -125,6 +106,7 @@ public class ViewInventoryFragment extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater) {
 		inflater.inflate(R.menu.menu, menu);
+		menuItemDelete = menu.findItem(R.id.menuitem_delete);
 	}
 
 	@Override
@@ -134,33 +116,62 @@ public class ViewInventoryFragment extends Fragment {
 				((MainActivity) requireActivity()).navController.navigate(R.id.navigation_home);
 				break;
 			case R.id.menuitem_import:
-				openFile(null);
+				openFile();
 				updateList(rsm.getRollingStocks());
 				stockAdapter = null;
 				stockAdapter = new StockAdapter(rsm.getRollingStocks());
 				stockView.setAdapter(stockAdapter);
 				break;
+			case R.id.menuitem_delete:
+				List<StockHolder> stockHolderList = stockAdapter.getStockHolders();
+
+				for (StockHolder stockHolder : stockHolderList) {
+					if (stockHolder.isCardChecked()) {
+						rsm.removeRollingStock(stockHolder.item.getId());
+						stockHolder.cardView.findViewById(R.id.cardExpansion).setVisibility(View.GONE);
+						Objects.requireNonNull(stockView.getAdapter()).notifyItemRemoved(stockView.getChildAdapterPosition((View) stockHolder.cardView));
+						((StockAdapter) stockView.getAdapter()).setRollingStockItems(RollingStockManager.get(getActivity()).getRollingStocks());
+					}
+				}
+				menuItemDelete.setEnabled(false);
+				menuItemDelete.setVisible(false);
+				break;
+			case R.id.menuitem_export:
+				exportFile();
 		}
 		return false;
 	} // inflate and handle option menu
 
-	// Request code for selecting a PDF document.
-	private static final int PICK_PDF_FILE = 2;
-
-	private void openFile(@Nullable Uri pickerInitialUri) {
-		boolean importSuccessful = ((MainActivity) requireActivity()).importRollingStock();
-
+	private void openFile() {
+		((MainActivity) requireActivity()).importRollingStock();
 	} // openFile
+
+	private void exportFile() {
+		((MainActivity) requireActivity()).exportRollingStock();
+	}
 
 	public boolean handleOnBackPressed() {
 		Toast.makeText(getActivity(), "Back Pressed", Toast.LENGTH_LONG).show();
 		boolean cardChecked = false;
-		for (int i = 0; i < stockAdapter.getItemCount(); i++) {
+		/*for (int i = 0; i < stockAdapter.getItemCount(); i++) {
 			StockHolder stockHolder = (StockHolder) stockView.findViewHolderForAdapterPosition(i);
 			if (stockHolder != null && stockHolder.cardView.isChecked()) {
 				cardChecked = true;
 				stockHolder.cardView.setChecked(false);
 			}
+		}
+		return cardChecked;*/
+
+		List<StockHolder> stockHolderList = stockAdapter.getStockHolders();
+		for (StockHolder stockHolder : stockHolderList) {
+			if (stockHolder.isCardChecked()) {
+				cardChecked = true;
+				stockHolder.uncheckCard();
+			}
+		}
+		if (cardChecked) {
+			menuItemDelete.setVisible(false);
+			menuItemDelete.setEnabled(false);
 		}
 		return cardChecked;
 	}
@@ -174,9 +185,11 @@ public class ViewInventoryFragment extends Fragment {
 		private MaterialCardView cardView;
 		private TextView rollingStockInfoTitle, isEngine, stockType, isLoaded, owningCompany, isRented;
 		public RollingStockItem item;
+		CardViewCheckListener cvcl;
 
 		public StockHolder(View v) {
 			super(v);
+			cvcl = new CardViewCheckListener();
 			cardView = (MaterialCardView) v;
 			rollingStockInfoTitle = itemView.findViewById(R.id.rollingStockInfoTitle);
 			isEngine = itemView.findViewById(R.id.isEngine);
@@ -184,25 +197,34 @@ public class ViewInventoryFragment extends Fragment {
 			isLoaded = itemView.findViewById(R.id.isLoaded);
 			owningCompany = itemView.findViewById(R.id.owningComany);
 			isRented = itemView.findViewById(R.id.isRented);
+
 			cardView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					//Toast.makeText(getActivity(), "MEOW", Toast.LENGTH_LONG).show();
-					final LinearLayout cardViewExpansion = cardView.findViewById(R.id.cardExpansion);
-					if (cardViewExpansion.getVisibility() == View.VISIBLE) {
-						cardViewExpansion.setVisibility(View.GONE);
+					if (!selectionMode) {
+						final LinearLayout cardViewExpansion = cardView.findViewById(R.id.cardExpansion);
+						if (cardViewExpansion.getVisibility() == View.VISIBLE) {
+							cardViewExpansion.setVisibility(View.GONE);
+						} else {
+							cardViewExpansion.setVisibility(View.VISIBLE);
+						}
 					} else {
-						cardViewExpansion.setVisibility(View.VISIBLE);
+						cardView.setChecked(!cardView.isChecked());
 					}
 				}
 			});
 			cardView.setOnLongClickListener(new View.OnLongClickListener() {
 				@Override
 				public boolean onLongClick(View view) {
-					cardView.setChecked(true);
+					cardView.setChecked(!cardView.isChecked());
+					selectionMode = true;
+					menuItemDelete.setEnabled(true);
+					menuItemDelete.setVisible(true);
 					return true;
 				}
 			});
+			cardView.setOnCheckedChangeListener(cvcl);
 			MaterialButton editBtn = cardView.findViewById(R.id.editCardBtn);
 			editBtn.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
@@ -218,7 +240,7 @@ public class ViewInventoryFragment extends Fragment {
 				public void onClick(View view) {
 					rsm.removeRollingStock(item.getId());
 					cardView.findViewById(R.id.cardExpansion).setVisibility(View.GONE);
-					Objects.requireNonNull(stockView.getAdapter()).notifyItemRemoved(stockView.getChildAdapterPosition((View) view.getParent().getParent().getParent()));
+					Objects.requireNonNull(stockView.getAdapter()).notifyItemRemoved(stockView.getChildAdapterPosition((View) view.getParent().getParent().getParent())); // deleteBtn.cardExpansion.cardContainer.MaterialCardView
 					((StockAdapter) stockView.getAdapter()).setRollingStockItems(RollingStockManager.get(getActivity()).getRollingStocks());
 				}
 			});
@@ -233,18 +255,45 @@ public class ViewInventoryFragment extends Fragment {
 			isLoaded.setText("Has Load: " + rollingStockItem.isLoaded());
 			owningCompany.setText("Owning Company: " + rollingStockItem.getOwningCompany());
 			isRented.setText("Is Rented: " + rollingStockItem.isRented());
+			cardView.setOnCheckedChangeListener(null);
+			cardView.setChecked(rollingStockItem.isChecked());
+			cardView.setOnCheckedChangeListener(cvcl);
+			//item = rollingStockItem;
 		}
 
-		/*public boolean isCardChecked() {
-			return cardView.isChecked();
-		}*/ // isCardChecked
+		public boolean isCardChecked() {
+			return item.isChecked();
+		} // isCardChecked
+
+		public void uncheckCard() {
+			cardView.setChecked(false);
+		}
+
+		private class CardViewCheckListener implements MaterialCardView.OnCheckedChangeListener {
+			@Override
+			public void onCheckedChanged(MaterialCardView card, boolean isChecked) {
+				item.setChecked(cardView.isChecked());
+				if (isChecked)
+					selectedItemsNum++;
+				else
+					selectedItemsNum--;
+				if (selectedItemsNum == 0) {
+					menuItemDelete.setVisible(false);
+					menuItemDelete.setEnabled(false);
+					selectionMode = false;
+				}
+			}
+		}
 	}
 
 	private class StockAdapter extends RecyclerView.Adapter<StockHolder> {
 		private List<RollingStockItem> rollingStockItems;
+		private List<StockHolder> stockHolders;
+
 
 		public StockAdapter(List<RollingStockItem> rollingStockItemsList) {
 			rollingStockItems = rollingStockItemsList;
+			stockHolders = new ArrayList<>();
 		}
 
 		/**
@@ -270,7 +319,9 @@ public class ViewInventoryFragment extends Fragment {
 		@Override
 		public StockHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 			LayoutInflater inflater = LayoutInflater.from(getActivity());
-			return new StockHolder(inflater.inflate(R.layout.rolling_stock_listitem, parent, false));
+			StockHolder stockHolder = new StockHolder(inflater.inflate(R.layout.rolling_stock_listitem, parent, false));
+			stockHolders.add(stockHolder);
+			return stockHolder;
 		}
 
 		/**
@@ -315,5 +366,10 @@ public class ViewInventoryFragment extends Fragment {
 			rollingStockItems = newRollingStockItems;
 			this.notifyDataSetChanged();
 		}
+
+		public List<StockHolder> getStockHolders() {
+			return stockHolders;
+		}
 	}
 }
+
